@@ -14,14 +14,14 @@ func TestHello(t *testing.T) {
 }
 
 func makeTestParameters(t *testing.T) *Parameters {
-	now, err := time.Parse("Jan 2, 2006 at 3:04pm (MST)", "Dec 25, 2013 at 5:34pm (JST)")
+	now, err := time.Parse("Jan 2, 2006 at 3:04pm (MST)", "Dec  5, 2013 at 5:04pm (JST)")
 	expectOK(err, t)
 	return &Parameters{"/root", now, "java"}
 }
 
 func TestMakeBaseDir(t *testing.T) {
 	actual := makeBaseDir(makeTestParameters(t))
-	expect(actual, "/root/2013/12251734-java", t)
+	expect(actual, "/root/2013/12051704-java", t)
 }
 
 func TestCGenerator(t *testing.T) {

@@ -60,8 +60,8 @@ func nonConflictingName(name string) string {
 func makeBaseDir(param *Parameters) string {
 	return filepath.Join(
 		param.Workspace,
-		fmt.Sprintf("%4d", param.Now.Year()),
-		fmt.Sprintf("%2d%2d%2d%2d-%s", param.Now.Month(), param.Now.Day(), param.Now.Hour(), param.Now.Minute(), param.Suffix))
+		fmt.Sprintf("%04d", param.Now.Year()),
+		fmt.Sprintf("%02d%02d%02d%02d-%s", param.Now.Month(), param.Now.Day(), param.Now.Hour(), param.Now.Minute(), param.Suffix))
 }
 
 func defaultWorkspace() string {
