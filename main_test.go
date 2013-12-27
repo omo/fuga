@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	. "github.com/omo/mkfoo/base"
+	. "github.com/omo/fuga/base"
 	"testing"
 	"time"
 )

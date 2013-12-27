@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	. "github.com/omo/mkfoo/base"
+	. "github.com/omo/fuga/base"
 	"os"
 	"os/user"
 	"path/filepath"
