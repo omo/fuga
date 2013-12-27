@@ -6,9 +6,6 @@ import (
 	. "github.com/omo/fuga/base"
 	_ "github.com/omo/fuga/langs"
 	"os"
-	"os/user"
-	"path/filepath"
-	"time"
 )
 
 type JavaGenerator struct{}
@@ -17,31 +14,16 @@ func (*JavaGenerator) Generate(writer StubWriter) error {
 	return nil
 }
 
-func makeBaseDir(param *Parameters) string {
-	return filepath.Join(
-		param.Workspace,
-		fmt.Sprintf("%4d", param.Now.Year()),
-		fmt.Sprintf("%2d%2d%2d%2d-%s", param.Now.Month(), param.Now.Day(), param.Now.Hour(), param.Now.Minute(), param.Suffix))
-}
-
-func defaultWorkspace() string {
-	usr, err := user.Current()
-	panicIfError(err)
-	return filepath.Join(usr.HomeDir, "work", "foos")
-}
-
-func makeParameters(args []string) *Parameters {
-	return &Parameters{
-		defaultWorkspace(),
-		time.Now(),
-		args[0],
-	}
-}
-
 func panicIfError(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func fail(message string) {
+	fmt.Printf(message)
+	fmt.Printf("\n")
+	os.Exit(1)
 }
 
 func main() {
@@ -50,17 +32,14 @@ func main() {
 
 	if len(args) <= 0 {
 		// FIXME: Use flag.Usage
-		fmt.Printf("Specify prefix\n")
-		os.Exit(1)
+		fail("Specify prefix")
 	}
 
-	params := makeParameters(args)
-	err := EnsureDir(params.Workspace)
-	panicIfError(err)
-	writer, err := MakeFileStubWriter(makeBaseDir(params))
-	panicIfError(err)
-	gen := FindGenerator(params.Suffix)
-	err = gen.Generate(writer)
-	panicIfError(err)
-	panicIfError(writer.LastError())
+	commandName := args[0]
+	command := FindCommand(commandName)
+	if nil == command {
+		fail(fmt.Sprintf("Command %s not found", commandName))
+	}
+
+	command.Run(args[1:])
 }

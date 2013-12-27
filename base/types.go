@@ -50,5 +50,11 @@ func AddCommand(command Command) {
 }
 
 func FindCommand(name string) Command {
+	for _, c := range theCommandList {
+		if c.Name() == name || c.Name()[0:1] == name {
+			return c
+		}
+	}
+
 	return nil
 }

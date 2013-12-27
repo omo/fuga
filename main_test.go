@@ -32,6 +32,13 @@ func TestCGenerator(t *testing.T) {
 	expectTrue(wri.IsWritten("Makefile"), "Makefile", t)
 }
 
+func TestFindCommand(t *testing.T) {
+	fullnameCommand := FindCommand("generate")
+	expect(fullnameCommand.Name(), "generate", t)
+	abbreviatedCommand := FindCommand("g")
+	expect(abbreviatedCommand.Name(), "generate", t)
+}
+
 // Copied from github.com/eknkc/amber/amber_test.go
 func expect(cur, expected string, t *testing.T) {
 	if cur != expected {
