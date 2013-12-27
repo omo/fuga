@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	. "github.com/omo/fuga/base"
+	_ "github.com/omo/fuga/langs"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -14,53 +15,6 @@ type JavaGenerator struct{}
 
 func (*JavaGenerator) Generate(writer StubWriter) error {
 	return nil
-}
-
-type CGenerator struct{}
-
-const sourceTempalte = `
-#include <stdio.h>
-
-int main(int argc, char* argv[]) {
-  printf("Hello, World!\n");
-  return 0;
-}
-`
-
-const makefileTemplate = `
-CC=gcc
-TARGET=./foo
-SOURCE=./foo.c
-
-run : ${TARGET}
-	${TARGET}
-
-clean :
-	-rm ${TARGET}
-
-${TARGET} : ${SOURCE}
-	${CC} $^ -o $@
-
-.PHONY : run clean
-`
-
-func (*CGenerator) Generate(writer StubWriter) error {
-	writer.WriteFile("foo.c", sourceTempalte)
-	writer.WriteFile("Makefile", makefileTemplate)
-	return nil
-}
-
-type GeneratorTable map[string]StubGenerator
-
-func makeTable() GeneratorTable {
-	return GeneratorTable{
-		"java": &JavaGenerator{},
-		"c":    &CGenerator{},
-	}
-}
-
-func makeGenerator(suffix string) StubGenerator {
-	return makeTable()[suffix]
 }
 
 func makeBaseDir(param *Parameters) string {
@@ -105,7 +59,7 @@ func main() {
 	panicIfError(err)
 	writer, err := MakeFileStubWriter(makeBaseDir(params))
 	panicIfError(err)
-	gen := makeGenerator(params.Suffix)
+	gen := FindGenerator(params.Suffix)
 	err = gen.Generate(writer)
 	panicIfError(err)
 	panicIfError(writer.LastError())

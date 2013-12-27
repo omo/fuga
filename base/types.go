@@ -2,6 +2,10 @@ package core
 
 import "time"
 
+//
+// For generators
+//
+
 type Parameters struct {
 	Workspace string
 	Now       time.Time
@@ -15,4 +19,36 @@ type StubWriter interface {
 
 type StubGenerator interface {
 	Generate(StubWriter) error
+}
+
+type GeneratorTable map[string]StubGenerator
+
+var theGeneratorTable = GeneratorTable{}
+
+func AddGenerator(suffix string, generator StubGenerator) {
+	theGeneratorTable[suffix] = generator
+}
+
+func FindGenerator(suffix string) StubGenerator {
+	return theGeneratorTable[suffix]
+}
+
+//
+// For commands
+//
+type Command interface {
+	Name() string
+	Run(args []string) error
+}
+
+type CommandList []Command
+
+var theCommandList = CommandList{}
+
+func AddCommand(command Command) {
+	theCommandList = append(theCommandList, command)
+}
+
+func FindCommand(name string) Command {
+	return nil
 }

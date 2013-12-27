@@ -26,7 +26,7 @@ func TestMakeBaseDir(t *testing.T) {
 
 func TestCGenerator(t *testing.T) {
 	wri := MakeTestingStubWriter()
-	gen := makeGenerator("c")
+	gen := FindGenerator("c")
 	WriteStub(wri, gen)
 	expectTrue(wri.IsWritten("foo.c"), "foo.c", t)
 	expectTrue(wri.IsWritten("Makefile"), "Makefile", t)
