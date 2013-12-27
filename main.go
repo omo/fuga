@@ -41,5 +41,7 @@ func main() {
 		fail(fmt.Sprintf("Command %s not found", commandName))
 	}
 
-	command.Run(args[1:])
+	if err := command.Run(args[1:]); nil != err {
+		fail(err.Error())
+	}
 }

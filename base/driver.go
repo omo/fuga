@@ -1,10 +1,7 @@
 package core
 
 import (
-	"errors"
-	"fmt"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 )
 
@@ -56,25 +53,7 @@ func (self *FileStubWriter) LastError() error {
 	return self.errors[len(self.errors)-1]
 }
 
-func EnsureDir(dirname string) error {
-	stat, err := os.Stat(dirname)
-	if os.IsNotExist(err) {
-		return os.MkdirAll(dirname, 0777)
-	}
-
-	if !stat.IsDir() {
-		return errors.New(fmt.Sprintf("File %s is already exist!", dirname))
-	}
-
-	return nil
-}
-
 func MakeFileStubWriter(baseDir string) (*FileStubWriter, error) {
-	// FIXME: This should ensure the freshness.
-	if err := EnsureDir(baseDir); err != nil {
-		return nil, err
-	}
-
 	return &FileStubWriter{
 		baseDir,
 		[]error{},

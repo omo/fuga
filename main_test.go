@@ -39,6 +39,11 @@ func TestFindCommand(t *testing.T) {
 	expect(abbreviatedCommand.Name(), "generate", t)
 }
 
+func TestNonConflictingName(t *testing.T) {
+	expect(nonConflictingName("/foo/1234-c"), "/foo/1234-c-001", t)
+	expect(nonConflictingName("/foo/1234-c-001"), "/foo/1234-c-002", t)
+}
+
 // Copied from github.com/eknkc/amber/amber_test.go
 func expect(cur, expected string, t *testing.T) {
 	if cur != expected {
