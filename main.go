@@ -41,7 +41,7 @@ func main() {
 
 	if len(args) <= 0 {
 		// FIXME: Use flag.Usage
-		fail("Specify prefix")
+		fail(fmt.Sprintf("Give one of these commands: %v", ListCommands()))
 	}
 
 	commandName := args[0]

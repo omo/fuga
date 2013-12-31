@@ -63,3 +63,12 @@ func FindCommand(name string) Command {
 
 	return nil
 }
+
+func ListCommands() []string {
+	ret := []string{}
+	for _, c := range theCommandList {
+		ret = append(ret, c.Name())
+	}
+
+	return ret
+}
