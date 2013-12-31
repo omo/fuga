@@ -6,13 +6,10 @@ import (
 	. "github.com/omo/fuga/base"
 	_ "github.com/omo/fuga/langs"
 	"os"
+	"os/user"
+	"path/filepath"
+	"regexp"
 )
-
-type JavaGenerator struct{}
-
-func (*JavaGenerator) Generate(writer StubWriter) error {
-	return nil
-}
 
 func panicIfError(err error) {
 	if err != nil {
@@ -26,6 +23,18 @@ func fail(message string) {
 	os.Exit(1)
 }
 
+func resolveHome(path string) string {
+	usr, err := user.Current()
+	panicIfError(err)
+	pattern := regexp.MustCompile(`^~`)
+	return pattern.ReplaceAllString(path, usr.HomeDir)
+}
+
+// Common Flags
+var givenWorkspace = flag.String("workspace", filepath.Join("~", ".fuga"),
+	"The directory where fuga generates stubs")
+
+// Bootstrap
 func main() {
 	flag.Parse()
 	args := flag.Args()
@@ -41,7 +50,8 @@ func main() {
 		fail(fmt.Sprintf("Command %s not found", commandName))
 	}
 
-	if err := command.Run(args[1:]); nil != err {
+	workspace := resolveHome(*givenWorkspace)
+	if err := command.Run(args[1:], CommandSettings{Workspace: workspace}); nil != err {
 		fail(err.Error())
 	}
 }

@@ -13,9 +13,9 @@ import (
 //
 type HelloCommand struct{}
 
-func (self *HelloCommand) Run(args []string) error {
+func (self *HelloCommand) Run(args []string, settings CommandSettings) error {
 	fmt.Printf("Hello args: %v\n", args)
-	if "error" == args[0] {
+	if 1 <= len(args) && "error" == args[0] {
 		return errors.New(fmt.Sprintf("Hello error: %s", strings.Join(args[1:], " ")))
 	}
 

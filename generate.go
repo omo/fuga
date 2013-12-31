@@ -6,7 +6,6 @@ import (
 	. "github.com/omo/fuga/base"
 	_ "github.com/omo/fuga/langs"
 	"os"
-	"os/user"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -64,20 +63,6 @@ func makeBaseDir(param *Parameters) string {
 		fmt.Sprintf("%02d%02d%02d%02d-%s", param.Now.Month(), param.Now.Day(), param.Now.Hour(), param.Now.Minute(), param.Suffix))
 }
 
-func defaultWorkspace() string {
-	usr, err := user.Current()
-	panicIfError(err)
-	return filepath.Join(usr.HomeDir, "work", "foos")
-}
-
-func makeParameters(args []string) *Parameters {
-	return &Parameters{
-		defaultWorkspace(),
-		time.Now(),
-		args[0],
-	}
-}
-
 func ensureBaseDir(name string) error {
 	for made := false; !made; {
 		if err := EnsureDir(name, NeedsFresh); err != nil {
@@ -97,8 +82,8 @@ func ensureBaseDir(name string) error {
 
 type GenerateCommand struct{}
 
-func (self *GenerateCommand) Run(args []string) error {
-	params := makeParameters(args)
+func (self *GenerateCommand) Run(args []string, settings CommandSettings) error {
+	params := &Parameters{Workspace: settings.Workspace, Now: time.Now(), Suffix: args[0]}
 
 	err := EnsureDir(params.Workspace, DoesntNeedFresh)
 	if nil != err {

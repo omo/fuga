@@ -6,6 +6,7 @@ import "time"
 // For generators
 //
 
+// FIXME: rename to GeneratorParameters
 type Parameters struct {
 	Workspace string
 	Now       time.Time
@@ -36,9 +37,13 @@ func FindGenerator(suffix string) StubGenerator {
 //
 // For commands
 //
+type CommandSettings struct {
+	Workspace string
+}
+
 type Command interface {
 	Name() string
-	Run(args []string) error
+	Run(args []string, settings CommandSettings) error
 }
 
 type CommandList []Command
