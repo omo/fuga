@@ -44,6 +44,20 @@ func TestNonConflictingName(t *testing.T) {
 	expect(nonConflictingName("/foo/1234-c-001"), "/foo/1234-c-002", t)
 }
 
+func TestParseDotFileToArgs(t *testing.T) {
+	flagString := `
+--flaga=x
+--flagb=y # Should be skipped
+   
+--flagc=z
+`
+	flags := parseDotFileToArgs(flagString)
+	expectTrue(len(flags) == 3, "len(flags)", t)
+	expect(flags[0], "--flaga=x", t)
+	expect(flags[1], "--flagb=y", t)
+	expect(flags[2], "--flagc=z", t)
+}
+
 // Copied from github.com/eknkc/amber/amber_test.go
 func expect(cur, expected string, t *testing.T) {
 	if cur != expected {

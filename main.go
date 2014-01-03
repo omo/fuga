@@ -5,10 +5,12 @@ import (
 	"fmt"
 	. "github.com/omo/fuga/base"
 	_ "github.com/omo/fuga/langs"
+	"io/ioutil"
 	"os"
 	"os/user"
 	"path/filepath"
 	"regexp"
+	"strings"
 )
 
 func panicIfError(err error) {
@@ -30,12 +32,60 @@ func resolveHome(path string) string {
 	return pattern.ReplaceAllString(path, usr.HomeDir)
 }
 
+func readDotFile() (string, error) {
+	usr, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+
+	data, err := ioutil.ReadFile(filepath.Join(usr.HomeDir, ".fugarc"))
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", nil
+		}
+
+		return "", err
+	}
+
+	return string(data), nil
+}
+
+func parseDotFileToArgs(text string) []string {
+	splitPattern := regexp.MustCompile(`\r?\n`)
+	emptyPattern := regexp.MustCompile(`^$`)
+	commentPattern := regexp.MustCompile(`^(.*)#`)
+
+	splittedString := splitPattern.Split(text, -1)
+	ret := []string{}
+	for _, v := range splittedString {
+
+		if mayIncludeComment := commentPattern.FindString(v); mayIncludeComment != "" {
+			v = mayIncludeComment[0 : len(mayIncludeComment)-1]
+		}
+
+		v = strings.Trim(v, " \t")
+		if emptyPattern.MatchString(v) {
+			continue
+		}
+
+		ret = append(ret, v)
+	}
+
+	return ret
+}
+
 // Common Flags
 var givenWorkspace = flag.String("workspace", filepath.Join("~", ".fuga"),
 	"The directory where fuga generates stubs")
 
 // Bootstrap
 func main() {
+	// Setup extra flags from the dot file.
+	dotText, err := readDotFile()
+	panicIfError(err)
+	dotFlags := parseDotFileToArgs(dotText)
+	os.Args = append(os.Args[:1], append(dotFlags, os.Args[1:]...)...)
+
 	flag.Parse()
 	args := flag.Args()
 
