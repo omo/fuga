@@ -58,6 +58,17 @@ func TestParseDotFileToArgs(t *testing.T) {
 	expect(flags[2], "--flagc=z", t)
 }
 
+func TestListPrimaryFiles(t *testing.T) {
+	listed := []string{}
+	listPrimaryFiles("./testroot", func(path string) {
+		listed = append(listed, path)
+	})
+
+	// FIXME: add files from other generators.
+	expectTrue(1 == len(listed), "len(listed)", t)
+	expect(listed[0], "testroot/2014/01042256-c/foo.c", t)
+}
+
 // Copied from github.com/eknkc/amber/amber_test.go
 func expect(cur, expected string, t *testing.T) {
 	if cur != expected {
