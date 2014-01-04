@@ -16,6 +16,7 @@ type Parameters struct {
 type StubWriter interface {
 	WriteFile(filename, content string)
 	LastError() error
+	PrimaryFileName() string
 }
 
 type StubGenerator interface {

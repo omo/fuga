@@ -17,6 +17,10 @@ func (self *TestingStubWriter) LastError() error {
 	return nil
 }
 
+func (self *TestingStubWriter) PrimaryFileName() string {
+	return ""
+}
+
 func (self *TestingStubWriter) IsWritten(filename string) bool {
 	_, ok := self.writtenFiles[filename]
 	return ok
@@ -33,15 +37,21 @@ func MakeTestingStubWriter() *TestingStubWriter {
 }
 
 type FileStubWriter struct {
-	baseDir string
-	errors  []error
+	baseDir         string
+	primaryFileName string
+	errors          []error
 }
 
 func (self *FileStubWriter) WriteFile(filename, content string) {
-	err := ioutil.WriteFile(filepath.Join(self.baseDir, filename), []byte(content), 0644)
+	path := filepath.Join(self.baseDir, filename)
+	err := ioutil.WriteFile(path, []byte(content), 0644)
 	if nil != err {
 		self.errors = append(self.errors, err)
 		return
+	}
+
+	if self.primaryFileName == "" {
+		self.primaryFileName = path
 	}
 }
 
@@ -53,9 +63,13 @@ func (self *FileStubWriter) LastError() error {
 	return self.errors[len(self.errors)-1]
 }
 
+func (self *FileStubWriter) PrimaryFileName() string {
+	return self.primaryFileName
+}
+
 func MakeFileStubWriter(baseDir string) (*FileStubWriter, error) {
 	return &FileStubWriter{
-		baseDir,
-		[]error{},
+		baseDir: baseDir,
+		errors:  []error{},
 	}, nil
 }
