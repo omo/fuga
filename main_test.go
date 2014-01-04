@@ -59,10 +59,11 @@ func TestParseDotFileToArgs(t *testing.T) {
 }
 
 func TestListPrimaryFiles(t *testing.T) {
+	entries := listPrimaryFiles("./testroot")
 	listed := []string{}
-	listPrimaryFiles("./testroot", func(path string) {
-		listed = append(listed, path)
-	})
+	for _, e := range entries {
+		listed = append(listed, e.PrimaryFile)
+	}
 
 	// FIXME: add files from other generators.
 	expectTrue(1 == len(listed), "len(listed)", t)
