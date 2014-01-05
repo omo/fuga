@@ -59,7 +59,7 @@ func TestParseDotFileToArgs(t *testing.T) {
 }
 
 func TestListPrimaryFiles(t *testing.T) {
-	entries := listPrimaryFiles("./testroot")
+	entries := ListPrimaryFiles("./testroot")
 	listed := []string{}
 	for _, e := range entries {
 		listed = append(listed, e.PrimaryFile)
@@ -68,6 +68,25 @@ func TestListPrimaryFiles(t *testing.T) {
 	// FIXME: add files from other generators.
 	expectTrue(1 == len(listed), "len(listed)", t)
 	expect(listed[0], "testroot/2014/01042256-c/foo.c", t)
+
+	e0 := entries.Pick(0)
+	expectTrue(e0.IsValid(), "e0.IsValid()", t)
+	e1 := entries.Pick(uint(len(listed)))
+	expectTrue(!e1.IsValid(), "e1.IsValid()", t)
+}
+
+func TestMakeEditorCommandArgs(t *testing.T) {
+	args1 := makeEditorCommandArgs("vi", "foo")
+	expectTrue(2 == len(args1), "len(args1)", t)
+	expect(args1[0], "vi", t)
+	expect(args1[1], "foo", t)
+
+	args2 := makeEditorCommandArgs("emacs -nw", "bar")
+	expectTrue(3 == len(args2), "len(args2)", t)
+	expect(args2[0], "emacs", t)
+	expect(args2[1], "-nw", t)
+	expect(args2[2], "bar", t)
+
 }
 
 // Copied from github.com/eknkc/amber/amber_test.go

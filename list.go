@@ -14,21 +14,38 @@ import (
 
 var _ = fmt.Printf
 
-type ListCommand struct{}
-
-type visitListItem func(string)
-
 type ListEntry struct {
 	PrimaryFile string
 }
 
+func (self ListEntry) IsValid() bool {
+	return "" != self.PrimaryFile
+}
+
 type ListEntryList []ListEntry
 
+func imin(x, y int) int {
+	return int(math.Min(float64(x), float64(y)))
+}
+
+func (self ListEntryList) Round(n int) int {
+	return imin(n, len(self))
+}
+
+func (self ListEntryList) Pick(n uint) ListEntry {
+	if 0 == len(self) || len(self) <= int(n) {
+		return ListEntry{}
+	}
+
+	return self[n]
+}
+
+// sort.Interface
 func (a ListEntryList) Len() int           { return len(a) }
 func (a ListEntryList) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ListEntryList) Less(i, j int) bool { return a[i].PrimaryFile > a[j].PrimaryFile }
 
-func listPrimaryFiles(workspace string) []ListEntry {
+func ListPrimaryFiles(workspace string) ListEntryList {
 	ret := ListEntryList{}
 
 	digitDirPattern := regexp.MustCompile(`^(\d{4}|\d{8})`)
@@ -73,9 +90,7 @@ func exp10(num int) int {
 	return ret
 }
 
-func imin(x, y int) int {
-	return int(math.Min(float64(x), float64(y)))
-}
+type ListCommand struct{}
 
 func (self *ListCommand) Run(args []string, settings CommandSettings) error {
 
@@ -83,16 +98,16 @@ func (self *ListCommand) Run(args []string, settings CommandSettings) error {
 	if 0 < len(args) {
 		n, err := strconv.ParseUint(args[0], 10, 32)
 		if nil != err {
-			fmt.Fprintf(os.Stderr, "%s\n", err.Error())
-			return nil
+			// FIXME Could give better error message
+			return err
 		}
 
 		count = int(n)
 	}
 
-	list := listPrimaryFiles(settings.Workspace)
+	list := ListPrimaryFiles(settings.Workspace)
 	if count != 0 {
-		list = list[0:imin(count, len(list))]
+		list = list[0:list.Round(count)]
 	}
 
 	width := exp10(len(list))
