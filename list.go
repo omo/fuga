@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 )
 
 var _ = fmt.Printf
@@ -18,8 +19,14 @@ type ListEntry struct {
 	PrimaryFile string
 }
 
+type ListEntryList []ListEntry
+
+func (a ListEntryList) Len() int           { return len(a) }
+func (a ListEntryList) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ListEntryList) Less(i, j int) bool { return a[i].PrimaryFile > a[j].PrimaryFile }
+
 func listPrimaryFiles(workspace string) []ListEntry {
-	ret := []ListEntry{}
+	ret := ListEntryList{}
 
 	digitDirPattern := regexp.MustCompile(`^(\d{4}|\d{8})`)
 	fooPattern := regexp.MustCompile(`(?i)^foo\.[[:alnum:]]+$`)
@@ -49,7 +56,7 @@ func listPrimaryFiles(workspace string) []ListEntry {
 			return nil
 		})
 
-	// FIXME: sort
+	sort.Sort(ret)
 	return ret
 }
 
