@@ -109,9 +109,8 @@ func (self *GenerateCommand) Run(args []string, settings CommandSettings) error 
 		return writer.LastError()
 	}
 
-	fmt.Printf("%s\n", writer.PrimaryFileName())
-
-	return nil
+	//fmt.Printf("%s\n", writer.PrimaryFileName())
+	return OpenWithEditor(writer.PrimaryFileName())
 }
 
 func (self *GenerateCommand) Name() string {
