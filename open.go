@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 var _ = fmt.Printf
@@ -16,9 +17,10 @@ var _ = fmt.Printf
 type OpenCommand struct{}
 
 func makeEditorCommandArgs(given, filename string) []string {
-	// FIXME: should support quoted blank
+	// FIXME: should support quoted blank in better way.
 	blankPattern := regexp.MustCompile(`\s+`)
-	return append(blankPattern.Split(given, -1), filename)
+	trimmed := strings.Trim(given, " \"")
+	return append(blankPattern.Split(trimmed, -1), filename)
 }
 
 func OpenWithEditor(filename string) error {
