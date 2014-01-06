@@ -1,6 +1,7 @@
 package langs
 
 import (
+	"flag"
 	base "github.com/omo/fuga/base"
 )
 
@@ -17,18 +18,18 @@ int main(int argc, char* argv[]) {
 `,
 
 	"Makefile": `#
-CC=g++
+CC={{.CompilerName}}
 TARGET=./foo
 SOURCE=./foo.cpp
 
-run : ${TARGET}
-	${TARGET}
+run : $(TARGET)
+	$(TARGET)
 
 clean :
-	-rm ${TARGET}
+	-rm $(TARGET)
 
-${TARGET} : ${SOURCE}
-	${CC} $^ -o $@
+$(TARGET) : $(SOURCE)
+	$(CC) $^ -o $@
 
 .PHONY : run clean
 `,
@@ -39,12 +40,19 @@ foo
 *.exe
 `}
 
+type cppOptions struct {
+	CompilerName string
+}
+
 func (*CppGenerator) Generate(writer base.StubWriter) error {
 	cppTemplate.WriteTo(writer, "foo.cpp")
-	cppTemplate.WriteTo(writer, "Makefile")
+	cppTemplate.WriteToWith(writer, "Makefile", cppOptions{CompilerName: *givenCppCommpiler})
 	cppTemplate.WriteTo(writer, ".gitignore")
 	return nil
 }
+
+var givenCppCommpiler = flag.String("cpp-compiler", "gcc",
+	"generate cpp: C++ compiler.")
 
 func init() {
 	base.AddGenerator("cpp", &CppGenerator{})

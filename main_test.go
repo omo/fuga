@@ -32,6 +32,12 @@ func TestCGenerator(t *testing.T) {
 	expectTrue(wri.IsWritten("Makefile"), "Makefile", t)
 }
 
+func TestCppGenerator(t *testing.T) {
+	wri := MakeTestingStubWriter()
+	gen := FindGenerator("cpp")
+	WriteStub(wri, gen)
+}
+
 func TestFindCommand(t *testing.T) {
 	fullnameCommand := FindCommand("generate")
 	expect(fullnameCommand.Name(), "generate", t)
