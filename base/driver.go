@@ -2,6 +2,7 @@ package core
 
 import (
 	"io/ioutil"
+	"log"
 	"path/filepath"
 )
 
@@ -10,6 +11,10 @@ type TestingStubWriter struct {
 }
 
 func (self *TestingStubWriter) WriteFile(filename, content string) {
+	if content == "" {
+		log.Panic("Empty content is given for %s", filename)
+	}
+
 	self.writtenFiles[filename] = content
 }
 
