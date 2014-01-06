@@ -66,6 +66,10 @@ func (self *OpenCommand) Name() string {
 var givenEditor = flag.String("editor", "vi",
 	"open, --open: Editor program to open the file.")
 
+func SetEditor(name string) {
+	*givenEditor = name
+}
+
 func init() {
 	AddCommand(&OpenCommand{})
 }
