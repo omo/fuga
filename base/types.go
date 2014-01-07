@@ -23,16 +23,24 @@ type StubGenerator interface {
 	Generate(StubWriter) error
 }
 
-type GeneratorTable map[string]StubGenerator
+type Language interface {
+	MakeGenerator() StubGenerator
+}
 
-var theGeneratorTable = GeneratorTable{}
+type LanguageTable map[string]Language
 
-func AddGenerator(suffix string, generator StubGenerator) {
-	theGeneratorTable[suffix] = generator
+var theLanguageTable = LanguageTable{}
+
+func AddLanguage(suffix string, lang Language) {
+	theLanguageTable[suffix] = lang
+}
+
+func FindLanguage(suffix string) Language {
+	return theLanguageTable[suffix]
 }
 
 func FindGenerator(suffix string) StubGenerator {
-	return theGeneratorTable[suffix]
+	return FindLanguage(suffix).MakeGenerator()
 }
 
 //

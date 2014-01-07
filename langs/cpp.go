@@ -54,6 +54,12 @@ func (*CppGenerator) Generate(writer base.StubWriter) error {
 var givenCppCommpiler = flag.String("cpp-compiler", "gcc",
 	"generate cpp: C++ compiler.")
 
+type CppLanguage struct{}
+
+func (*CppLanguage) MakeGenerator() base.StubGenerator {
+	return &CppGenerator{}
+}
+
 func init() {
-	base.AddGenerator("cpp", &CppGenerator{})
+	base.AddLanguage("cpp", &CppLanguage{})
 }

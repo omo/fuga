@@ -46,6 +46,12 @@ func (*CGenerator) Generate(writer base.StubWriter) error {
 	return nil
 }
 
+type CLanguage struct{}
+
+func (*CLanguage) MakeGenerator() base.StubGenerator {
+	return &CGenerator{}
+}
+
 func init() {
-	base.AddGenerator("c", &CGenerator{})
+	base.AddLanguage("c", &CLanguage{})
 }

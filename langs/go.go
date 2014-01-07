@@ -26,6 +26,12 @@ func (*GoGenerator) Generate(writer base.StubWriter) error {
 	return nil
 }
 
+type GoLanguage struct{}
+
+func (*GoLanguage) MakeGenerator() base.StubGenerator {
+	return &GoGenerator{}
+}
+
 func init() {
-	base.AddGenerator("go", &GoGenerator{})
+	base.AddLanguage("go", &GoLanguage{})
 }
