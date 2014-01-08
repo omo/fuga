@@ -51,12 +51,12 @@ func (self *OpenCommand) Run(args []string, settings CommandSettings) error {
 		nth = n
 	}
 
-	picked := ListPrimaryFiles(settings.Workspace).Pick(uint(nth))
+	picked := ListBuildUnits(settings.Workspace).Pick(uint(nth))
 	if !picked.IsValid() {
 		return errors.New("Cannot find valid files.")
 	}
 
-	return OpenWithEditor(picked.PrimaryFile)
+	return OpenWithEditor(picked.PrimaryFile())
 }
 
 func (self *OpenCommand) Name() string {

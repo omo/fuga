@@ -64,11 +64,11 @@ func TestParseDotFileToArgs(t *testing.T) {
 	expect(flags[2], "--flagc=z", t)
 }
 
-func TestListPrimaryFiles(t *testing.T) {
-	entries := ListPrimaryFiles("./testroot")
+func TestListBuildUnits(t *testing.T) {
+	entries := ListBuildUnits("./testroot")
 	listed := []string{}
 	for _, e := range entries {
-		listed = append(listed, e.PrimaryFile)
+		listed = append(listed, e.PrimaryFile())
 	}
 
 	// FIXME: add files from other generators.

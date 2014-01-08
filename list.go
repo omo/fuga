@@ -14,39 +14,44 @@ import (
 
 var _ = fmt.Printf
 
-type ListEntry struct {
-	PrimaryFile string
+// FIXME: Move to separate file
+type BuildUnit struct {
+	primaryFile string
 }
 
-func (self ListEntry) IsValid() bool {
-	return "" != self.PrimaryFile
+func (self BuildUnit) PrimaryFile() string {
+	return self.primaryFile
 }
 
-type ListEntryList []ListEntry
+func (self BuildUnit) IsValid() bool {
+	return "" != self.PrimaryFile()
+}
+
+type BuildUnitList []BuildUnit
 
 func imin(x, y int) int {
 	return int(math.Min(float64(x), float64(y)))
 }
 
-func (self ListEntryList) Round(n int) int {
+func (self BuildUnitList) Round(n int) int {
 	return imin(n, len(self))
 }
 
-func (self ListEntryList) Pick(n uint) ListEntry {
+func (self BuildUnitList) Pick(n uint) BuildUnit {
 	if 0 == len(self) || len(self) <= int(n) {
-		return ListEntry{}
+		return BuildUnit{}
 	}
 
 	return self[n]
 }
 
 // sort.Interface
-func (a ListEntryList) Len() int           { return len(a) }
-func (a ListEntryList) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ListEntryList) Less(i, j int) bool { return a[i].PrimaryFile > a[j].PrimaryFile }
+func (a BuildUnitList) Len() int           { return len(a) }
+func (a BuildUnitList) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a BuildUnitList) Less(i, j int) bool { return a[i].PrimaryFile() > a[j].PrimaryFile() }
 
-func ListPrimaryFiles(workspace string) ListEntryList {
-	ret := ListEntryList{}
+func ListBuildUnits(workspace string) BuildUnitList {
+	ret := BuildUnitList{}
 
 	digitDirPattern := regexp.MustCompile(`^(\d{4}|\d{8})`)
 	fooPattern := regexp.MustCompile(`(?i)^foo\.[[:alnum:]]+$`)
@@ -72,7 +77,7 @@ func ListPrimaryFiles(workspace string) ListEntryList {
 				return nil
 			}
 
-			ret = append(ret, ListEntry{PrimaryFile: path})
+			ret = append(ret, BuildUnit{primaryFile: path})
 			return nil
 		})
 
@@ -105,7 +110,7 @@ func (self *ListCommand) Run(args []string, settings CommandSettings) error {
 		count = int(n)
 	}
 
-	list := ListPrimaryFiles(settings.Workspace)
+	list := ListBuildUnits(settings.Workspace)
 	if count != 0 {
 		list = list[0:list.Round(count)]
 	}
