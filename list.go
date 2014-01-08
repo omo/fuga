@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	. "github.com/omo/fuga/base"
@@ -43,6 +44,26 @@ func (self BuildUnitList) Pick(n uint) BuildUnit {
 	}
 
 	return self[n]
+}
+
+func PickBuildUnitFromArgs(settings CommandSettings, args []string) (BuildUnit, error) {
+	var nth uint64 = 0
+	if 0 < len(args) {
+		n, err := strconv.ParseUint(args[0], 10, 32)
+		if nil != err {
+			// FIXME: Could give better error message
+			return BuildUnit{}, err
+		}
+
+		nth = n
+	}
+
+	picked := ListBuildUnits(settings.Workspace).Pick(uint(nth))
+	if !picked.IsValid() {
+		return BuildUnit{}, errors.New("Cannot find valid files.")
+	}
+
+	return picked, nil
 }
 
 // sort.Interface

@@ -1,14 +1,12 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	. "github.com/omo/fuga/base"
 	"os"
 	"os/exec"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -40,20 +38,9 @@ func OpenWithEditor(filename string) error {
 
 func (self *OpenCommand) Run(args []string, settings CommandSettings) error {
 
-	var nth uint64 = 0
-	if 0 < len(args) {
-		n, err := strconv.ParseUint(args[0], 10, 32)
-		if nil != err {
-			// FIXME: Could give better error message
-			return err
-		}
-
-		nth = n
-	}
-
-	picked := ListBuildUnits(settings.Workspace).Pick(uint(nth))
-	if !picked.IsValid() {
-		return errors.New("Cannot find valid files.")
+	picked, err := PickBuildUnitFromArgs(settings, args)
+	if err != nil {
+		return err
 	}
 
 	return OpenWithEditor(picked.PrimaryFile())
