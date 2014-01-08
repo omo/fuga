@@ -32,6 +32,10 @@ func (*GoLanguage) MakeGenerator() base.StubGenerator {
 	return &GoGenerator{}
 }
 
+func (*GoLanguage) MakeRunner() base.BuildRunner {
+	return nil
+}
+
 func init() {
 	base.AddLanguage("go", &GoLanguage{})
 }

@@ -66,6 +66,10 @@ func (self *CppLanguage) MakeGenerator() base.StubGenerator {
 	return &CppGenerator{Suffix: self.Suffix}
 }
 
+func (*CppLanguage) MakeRunner() base.BuildRunner {
+	return nil
+}
+
 func init() {
 	cppTemplate["foo.cc"] = cppTemplate["foo.cpp"]
 

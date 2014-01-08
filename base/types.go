@@ -1,6 +1,9 @@
 package core
 
-import "time"
+import (
+	"path/filepath"
+	"time"
+)
 
 //
 // For generators
@@ -23,8 +26,37 @@ type StubGenerator interface {
 	Generate(StubWriter) error
 }
 
+type BuildUnit struct {
+	primaryFile string
+}
+
+func (self BuildUnit) PrimaryFile() string {
+	return self.primaryFile
+}
+
+func (self BuildUnit) Dir() string {
+	return filepath.Dir(self.primaryFile)
+}
+
+func (self BuildUnit) IsValid() bool {
+	return "" != self.PrimaryFile()
+}
+
+func MakeBuildUnit(file string) BuildUnit {
+	return BuildUnit{primaryFile: file}
+}
+
+type BuildRunnerParams struct {
+	unit BuildUnit
+}
+
+type BuildRunner interface {
+	Run(params BuildRunnerParams) error
+}
+
 type Language interface {
 	MakeGenerator() StubGenerator
+	MakeRunner() BuildRunner
 }
 
 type LanguageTable map[string]Language

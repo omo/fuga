@@ -16,22 +16,6 @@ import (
 var _ = fmt.Printf
 
 // FIXME: Move to separate file
-type BuildUnit struct {
-	primaryFile string
-}
-
-func (self BuildUnit) PrimaryFile() string {
-	return self.primaryFile
-}
-
-func (self BuildUnit) Dir() string {
-	return filepath.Dir(self.primaryFile)
-}
-
-func (self BuildUnit) IsValid() bool {
-	return "" != self.PrimaryFile()
-}
-
 type BuildUnitList []BuildUnit
 
 func imin(x, y int) int {
@@ -102,7 +86,7 @@ func ListBuildUnits(workspace string) BuildUnitList {
 				return nil
 			}
 
-			ret = append(ret, BuildUnit{primaryFile: path})
+			ret = append(ret, MakeBuildUnit(path))
 			return nil
 		})
 

@@ -52,6 +52,10 @@ func (*CLanguage) MakeGenerator() base.StubGenerator {
 	return &CGenerator{}
 }
 
+func (*CLanguage) MakeRunner() base.BuildRunner {
+	return nil
+}
+
 func init() {
 	base.AddLanguage("c", &CLanguage{})
 }
