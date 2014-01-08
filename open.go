@@ -37,7 +37,6 @@ func OpenWithEditor(filename string) error {
 }
 
 func (self *OpenCommand) Run(args []string, settings CommandSettings) error {
-
 	picked, err := PickBuildUnitFromArgs(settings, args)
 	if err != nil {
 		return err

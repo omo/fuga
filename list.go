@@ -24,6 +24,10 @@ func (self BuildUnit) PrimaryFile() string {
 	return self.primaryFile
 }
 
+func (self BuildUnit) Dir() string {
+	return filepath.Dir(self.primaryFile)
+}
+
 func (self BuildUnit) IsValid() bool {
 	return "" != self.PrimaryFile()
 }
