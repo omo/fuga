@@ -41,7 +41,7 @@ func (self *RunCommand) Run(args []string, settings CommandSettings) error {
 		return errors.New(fmt.Sprintf("No scratch runner for %s", picked.Dir()))
 	}
 
-	return runner.Run(BuildRunnerParams{Unit: picked})
+	return runner.Run(ScratchRunnerParams{Unit: picked})
 }
 
 func (self *RunCommand) Name() string {

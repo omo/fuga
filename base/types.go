@@ -16,14 +16,14 @@ type Parameters struct {
 	Suffix    string
 }
 
-type StubWriter interface {
+type ScratchWriter interface {
 	WriteFile(filename, content string)
 	LastError() error
 	PrimaryFileName() string
 }
 
 type StubGenerator interface {
-	Generate(StubWriter) error
+	Generate(ScratchWriter) error
 }
 
 type BuildUnit struct {
@@ -50,17 +50,17 @@ func MakeBuildUnit(file string) BuildUnit {
 	return BuildUnit{primaryFile: file}
 }
 
-type BuildRunnerParams struct {
+type ScratchRunnerParams struct {
 	Unit BuildUnit
 }
 
-type BuildRunner interface {
-	Run(params BuildRunnerParams) error
+type ScratchRunner interface {
+	Run(params ScratchRunnerParams) error
 }
 
 type Language interface {
 	MakeGenerator() StubGenerator
-	MakeRunner() BuildRunner
+	MakeRunner() ScratchRunner
 }
 
 type LanguageTable map[string]Language
@@ -79,7 +79,7 @@ func FindGenerator(suffix string) StubGenerator {
 	return FindLanguage(suffix).MakeGenerator()
 }
 
-func FindRunner(suffix string) BuildRunner {
+func FindRunner(suffix string) ScratchRunner {
 	return FindLanguage(suffix).MakeRunner()
 }
 

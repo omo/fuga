@@ -39,7 +39,7 @@ foo
 *.exe
 `}
 
-func (*CGenerator) Generate(writer base.StubWriter) error {
+func (*CGenerator) Generate(writer base.ScratchWriter) error {
 	cTemplate.WriteTo(writer, "foo.c")
 	cTemplate.WriteTo(writer, "Makefile")
 	cTemplate.WriteTo(writer, ".gitignore")
@@ -52,7 +52,7 @@ func (*CLanguage) MakeGenerator() base.StubGenerator {
 	return &CGenerator{}
 }
 
-func (*CLanguage) MakeRunner() base.BuildRunner {
+func (*CLanguage) MakeRunner() base.ScratchRunner {
 	return &MakefileRunner{}
 }
 

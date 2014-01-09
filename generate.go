@@ -95,7 +95,7 @@ func (self *GenerateCommand) Run(args []string, settings CommandSettings) error 
 		return err
 	}
 
-	writer, err := MakeFileStubWriter(baseDir)
+	writer, err := MakeFileScratchWriter(baseDir)
 	if nil != err {
 		return err
 	}

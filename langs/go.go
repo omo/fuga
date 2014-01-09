@@ -27,7 +27,7 @@ func main() {
 }
 `}
 
-func (*GoGenerator) Generate(writer base.StubWriter) error {
+func (*GoGenerator) Generate(writer base.ScratchWriter) error {
 	goTemplate.WriteTo(writer, "foo.go")
 	return nil
 }
@@ -50,7 +50,7 @@ func runProgram(prog string, args []string, wd string) error {
 
 type GoRunner struct{}
 
-func (*GoRunner) Run(params base.BuildRunnerParams) error {
+func (*GoRunner) Run(params base.ScratchRunnerParams) error {
 	return runProgram("go", []string{"run", params.Unit.PrimaryBase()}, params.Unit.Dir())
 }
 
@@ -60,7 +60,7 @@ func (*GoLanguage) MakeGenerator() base.StubGenerator {
 	return &GoGenerator{}
 }
 
-func (*GoLanguage) MakeRunner() base.BuildRunner {
+func (*GoLanguage) MakeRunner() base.ScratchRunner {
 	return &GoRunner{}
 }
 

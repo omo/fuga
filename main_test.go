@@ -25,7 +25,7 @@ func TestMakeBaseDir(t *testing.T) {
 }
 
 func TestCGenerator(t *testing.T) {
-	wri := MakeTestingStubWriter()
+	wri := MakeTestingScratchWriter()
 	gen := FindGenerator("c")
 	WriteStub(wri, gen)
 	expectTrue(wri.IsWritten("foo.c"), "foo.c", t)
@@ -33,7 +33,7 @@ func TestCGenerator(t *testing.T) {
 }
 
 func TestCppGenerator(t *testing.T) {
-	wri := MakeTestingStubWriter()
+	wri := MakeTestingScratchWriter()
 	gen := FindGenerator("cpp")
 	WriteStub(wri, gen)
 }

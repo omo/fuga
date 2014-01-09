@@ -47,7 +47,7 @@ type cppOptions struct {
 	SourceSuffix string
 }
 
-func (self *CppGenerator) Generate(writer base.StubWriter) error {
+func (self *CppGenerator) Generate(writer base.ScratchWriter) error {
 	sourceName := "foo." + self.Suffix
 	cppTemplate.WriteTo(writer, sourceName)
 	cppTemplate.WriteToWith(writer, "Makefile", cppOptions{CompilerName: *givenCppCommpiler, SourceSuffix: self.Suffix})
@@ -66,7 +66,7 @@ func (self *CppLanguage) MakeGenerator() base.StubGenerator {
 	return &CppGenerator{Suffix: self.Suffix}
 }
 
-func (*CppLanguage) MakeRunner() base.BuildRunner {
+func (*CppLanguage) MakeRunner() base.ScratchRunner {
 	return &MakefileRunner{}
 }
 

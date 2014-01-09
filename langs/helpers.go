@@ -8,11 +8,11 @@ import (
 
 type TemplateMap map[string]string
 
-func (self TemplateMap) WriteTo(writer base.StubWriter, name string) {
+func (self TemplateMap) WriteTo(writer base.ScratchWriter, name string) {
 	writer.WriteFile(name, self[name])
 }
 
-func (self TemplateMap) WriteToWith(writer base.StubWriter, name string, data interface{}) {
+func (self TemplateMap) WriteToWith(writer base.ScratchWriter, name string, data interface{}) {
 	doc := &bytes.Buffer{}
 	templateText := self[name]
 	tmpl, err := template.New("cppTemplate").Parse(templateText)
@@ -30,6 +30,6 @@ func (self TemplateMap) WriteToWith(writer base.StubWriter, name string, data in
 
 type MakefileRunner struct{}
 
-func (*MakefileRunner) Run(params base.BuildRunnerParams) error {
+func (*MakefileRunner) Run(params base.ScratchRunnerParams) error {
 	return runProgram("make", []string{}, params.Unit.Dir())
 }
