@@ -81,6 +81,14 @@ func TestListBuildUnits(t *testing.T) {
 	expectTrue(!e1.IsValid(), "e1.IsValid()", t)
 }
 
+func TestPickBuildUnitFromScrachDirr(t *testing.T) {
+	entry := PickBuildUnitFromScrachDir("./testroot/2014/01042256-c/")
+	expect(entry.PrimaryFile(), "testroot/2014/01042256-c/foo.c", t)
+
+	shouldBeEmpty := PickBuildUnitFromScrachDir("./testroot/")
+	expectTrue(!shouldBeEmpty.IsValid(), "shouldBeEmpty", t)
+}
+
 func TestMakeEditorCommandArgs(t *testing.T) {
 	args1 := makeEditorCommandArgs("vi", "foo")
 	expectTrue(2 == len(args1), "len(args1)", t)
@@ -92,7 +100,6 @@ func TestMakeEditorCommandArgs(t *testing.T) {
 	expect(args2[0], "emacs", t)
 	expect(args2[1], "-nw", t)
 	expect(args2[2], "bar", t)
-
 }
 
 func TestFindLanguageSuffix(t *testing.T) {

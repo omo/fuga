@@ -18,8 +18,19 @@ func findLanguageSuffix(path string) string {
 	return matched[0]
 }
 
+func pickBuildUnit(settings CommandSettings, args []string) (BuildUnit, error) {
+	if 0 == len(args) {
+		unit := PickBuildUnitFromScrachDir(settings.Wd)
+		if unit.IsValid() {
+			return unit, nil
+		}
+	}
+
+	return PickBuildUnitFromArgs(settings, args)
+}
+
 func (self *RunCommand) Run(args []string, settings CommandSettings) error {
-	picked, err := PickBuildUnitFromArgs(settings, args)
+	picked, err := pickBuildUnit(settings, args)
 	if err != nil {
 		return err
 	}

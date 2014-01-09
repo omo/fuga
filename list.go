@@ -59,10 +59,25 @@ func (a BuildUnitList) Len() int           { return len(a) }
 func (a BuildUnitList) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a BuildUnitList) Less(i, j int) bool { return a[i].PrimaryFile() > a[j].PrimaryFile() }
 
+var yearDirRe = regexp.MustCompile(`^\d{4}`)
+var scratchDirRe = regexp.MustCompile(`^\d{8}-[[:alnum:]]+$`)
+
+func PickBuildUnitFromScrachDir(dir string) BuildUnit {
+	if nil == scratchDirRe.FindStringIndex(filepath.Base(dir)) {
+		return BuildUnit{}
+	}
+
+	list := ListBuildUnits(dir)
+	if 0 == len(list) {
+		return BuildUnit{}
+	}
+
+	return list[0]
+}
+
 func ListBuildUnits(workspace string) BuildUnitList {
 	ret := BuildUnitList{}
 
-	digitDirPattern := regexp.MustCompile(`^(\d{4}|\d{8})`)
 	fooPattern := regexp.MustCompile(`(?i)^foo\.[[:alnum:]]+$`)
 
 	filepath.Walk(workspace,
@@ -75,7 +90,8 @@ func ListBuildUnits(workspace string) BuildUnitList {
 
 			if info.Mode().IsDir() {
 				// Goes into seemingly generated directories only.
-				if nil == digitDirPattern.FindStringIndex(basename) {
+				if nil == yearDirRe.FindStringIndex(basename) &&
+					nil == scratchDirRe.FindStringIndex(basename) {
 					return filepath.SkipDir
 				}
 
