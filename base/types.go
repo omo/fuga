@@ -38,6 +38,10 @@ func (self BuildUnit) Dir() string {
 	return filepath.Dir(self.primaryFile)
 }
 
+func (self BuildUnit) PrimaryBase() string {
+	return filepath.Base(self.primaryFile)
+}
+
 func (self BuildUnit) IsValid() bool {
 	return "" != self.PrimaryFile()
 }
@@ -47,7 +51,7 @@ func MakeBuildUnit(file string) BuildUnit {
 }
 
 type BuildRunnerParams struct {
-	unit BuildUnit
+	Unit BuildUnit
 }
 
 type BuildRunner interface {
@@ -75,11 +79,16 @@ func FindGenerator(suffix string) StubGenerator {
 	return FindLanguage(suffix).MakeGenerator()
 }
 
+func FindRunner(suffix string) BuildRunner {
+	return FindLanguage(suffix).MakeRunner()
+}
+
 //
 // For commands
 //
 type CommandSettings struct {
 	Workspace string
+	Wd        string
 }
 
 type Command interface {

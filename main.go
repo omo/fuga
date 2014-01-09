@@ -100,8 +100,13 @@ func main() {
 		fail(fmt.Sprintf("Command %s not found", commandName))
 	}
 
+	wd, err := os.Getwd()
+	if err != nil {
+		fail(err.Error())
+	}
+
 	workspace := resolveHome(*givenWorkspace)
-	if err := command.Run(args[1:], CommandSettings{Workspace: workspace}); nil != err {
+	if err := command.Run(args[1:], CommandSettings{Workspace: workspace, Wd: wd}); nil != err {
 		fail(err.Error())
 	}
 }

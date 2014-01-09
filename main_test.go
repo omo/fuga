@@ -95,6 +95,11 @@ func TestMakeEditorCommandArgs(t *testing.T) {
 
 }
 
+func TestFindLanguageSuffix(t *testing.T) {
+	expect(findLanguageSuffix("testroot/2014/01042256-c"), "c", t)
+	expect(findLanguageSuffix("testroot/2014/01042256-go"), "go", t)
+}
+
 // Copied from github.com/eknkc/amber/amber_test.go
 func expect(cur, expected string, t *testing.T) {
 	if cur != expected {

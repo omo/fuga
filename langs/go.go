@@ -1,8 +1,14 @@
 package langs
 
 import (
+	"fmt"
 	base "github.com/omo/fuga/base"
+	"os"
+	"os/exec"
+	"strings"
 )
+
+var _ = fmt.Printf
 
 type GoGenerator struct{}
 
@@ -26,6 +32,28 @@ func (*GoGenerator) Generate(writer base.StubWriter) error {
 	return nil
 }
 
+type GoRunner struct{}
+
+func runProgram(prog string, args []string, wd string) error {
+	cmd := exec.Command(prog, args...)
+	cmd.Dir = wd
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+
+	// FIXME: Prinly only in verbose mode
+	fmt.Printf("Executing: %s %s\n", prog, strings.Join(args, " "))
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+
+	return cmd.Wait()
+}
+
+func (*GoRunner) Run(params base.BuildRunnerParams) error {
+	return runProgram("go", []string{"run", params.Unit.PrimaryBase()}, params.Unit.Dir())
+}
+
 type GoLanguage struct{}
 
 func (*GoLanguage) MakeGenerator() base.StubGenerator {
@@ -33,7 +61,7 @@ func (*GoLanguage) MakeGenerator() base.StubGenerator {
 }
 
 func (*GoLanguage) MakeRunner() base.BuildRunner {
-	return nil
+	return &GoRunner{}
 }
 
 func init() {
