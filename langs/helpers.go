@@ -27,3 +27,9 @@ func (self TemplateMap) WriteToWith(writer base.StubWriter, name string, data in
 
 	writer.WriteFile(name, doc.String())
 }
+
+type MakefileRunner struct{}
+
+func (*MakefileRunner) Run(params base.BuildRunnerParams) error {
+	return runProgram("make", []string{}, params.Unit.Dir())
+}

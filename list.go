@@ -127,9 +127,9 @@ func (self *ListCommand) Run(args []string, settings CommandSettings) error {
 	width := exp10(len(list))
 	for i, e := range list {
 		if *shouldPrintOridinalNumber {
-			fmt.Printf("%"+strconv.FormatInt(int64(width), 10)+"d: %s\n", i, e.PrimaryFile)
+			fmt.Printf("%"+strconv.FormatInt(int64(width), 10)+"d: %s\n", i, e.PrimaryFile())
 		} else {
-			fmt.Printf("%s\n", e.PrimaryFile)
+			fmt.Printf("%s\n", e.PrimaryFile())
 		}
 	}
 

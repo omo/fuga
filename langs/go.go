@@ -32,8 +32,6 @@ func (*GoGenerator) Generate(writer base.StubWriter) error {
 	return nil
 }
 
-type GoRunner struct{}
-
 func runProgram(prog string, args []string, wd string) error {
 	cmd := exec.Command(prog, args...)
 	cmd.Dir = wd
@@ -49,6 +47,8 @@ func runProgram(prog string, args []string, wd string) error {
 
 	return cmd.Wait()
 }
+
+type GoRunner struct{}
 
 func (*GoRunner) Run(params base.BuildRunnerParams) error {
 	return runProgram("go", []string{"run", params.Unit.PrimaryBase()}, params.Unit.Dir())

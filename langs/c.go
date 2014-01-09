@@ -53,7 +53,7 @@ func (*CLanguage) MakeGenerator() base.StubGenerator {
 }
 
 func (*CLanguage) MakeRunner() base.BuildRunner {
-	return nil
+	return &MakefileRunner{}
 }
 
 func init() {

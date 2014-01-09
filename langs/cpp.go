@@ -67,7 +67,7 @@ func (self *CppLanguage) MakeGenerator() base.StubGenerator {
 }
 
 func (*CppLanguage) MakeRunner() base.BuildRunner {
-	return nil
+	return &MakefileRunner{}
 }
 
 func init() {
