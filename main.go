@@ -74,6 +74,32 @@ func parseDotFileToArgs(text string) []string {
 	return ret
 }
 
+func dropNonFlagArgs(args []string) (nonFlags, flags []string) {
+	nonFlags = []string{}
+
+	for ; 0 < len(args) && -1 == strings.Index(args[0], "-"); args = args[1:] {
+		nonFlags = append(nonFlags, args[0])
+	}
+
+	return nonFlags, args
+}
+
+func parseAndBuildArgs() ([]string, error) {
+	// Setup extra flags from the dot file.
+	dotText, err := readDotFile()
+	if nil != err {
+		return nil, err
+	}
+
+	dotFlags := parseDotFileToArgs(dotText)
+	nonFlags, flags := dropNonFlagArgs(os.Args[1:])
+	os.Args = append(os.Args[:1], append(dotFlags, flags...)...)
+
+	flag.Parse()
+
+	return append(nonFlags, flag.Args()...), nil
+}
+
 // Common Flags
 var givenWorkspace = flag.String("workspace", filepath.Join("~", ".fuga"),
 	"The directory where fuga generates stubs")
@@ -83,14 +109,8 @@ var logVerbose = flag.Bool("verbose", false,
 
 // Bootstrap
 func main() {
-	// Setup extra flags from the dot file.
-	dotText, err := readDotFile()
+	args, err := parseAndBuildArgs()
 	panicIfError(err)
-	dotFlags := parseDotFileToArgs(dotText)
-	os.Args = append(os.Args[:1], append(dotFlags, os.Args[1:]...)...)
-
-	flag.Parse()
-	args := flag.Args()
 
 	if len(args) <= 0 {
 		// FIXME: Use flag.Usage

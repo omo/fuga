@@ -107,6 +107,23 @@ func TestFindLanguageSuffix(t *testing.T) {
 	expect(findLanguageSuffix("testroot/2014/01042256-go"), "go", t)
 }
 
+func TestDropNonFlagArgs(t *testing.T) {
+	nonFlags, flags := dropNonFlagArgs([]string{"run", "1", "--verbose", "--lang=go", "--editor=vi"})
+	fmt.Printf("%v\n", nonFlags)
+	expectTrue(len(nonFlags) == 2, "len(nonFlags)", t)
+	expect(nonFlags[0], "run", t)
+	expect(nonFlags[1], "1", t)
+	expectTrue(len(flags) == 3, "len(flags)", t)
+
+	nonFlags, flags = dropNonFlagArgs([]string{"run", "1"})
+	expectTrue(len(nonFlags) == 2, "len(nonFlags)", t)
+	expectTrue(len(flags) == 0, "len(flags)", t)
+
+	nonFlags, flags = dropNonFlagArgs([]string{"--verbose", "--lang=go", "--editor=vi"})
+	expectTrue(len(nonFlags) == 0, "len(nonFlags)", t)
+	expectTrue(len(flags) == 3, "len(flags)", t)
+}
+
 // Copied from github.com/eknkc/amber/amber_test.go
 func expect(cur, expected string, t *testing.T) {
 	if cur != expected {
