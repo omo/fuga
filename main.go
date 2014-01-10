@@ -78,6 +78,9 @@ func parseDotFileToArgs(text string) []string {
 var givenWorkspace = flag.String("workspace", filepath.Join("~", ".fuga"),
 	"The directory where fuga generates stubs")
 
+var logVerbose = flag.Bool("verbose", false,
+	"Emit verbose log for diagnosing problem")
+
 // Bootstrap
 func main() {
 	// Setup extra flags from the dot file.
@@ -92,6 +95,10 @@ func main() {
 	if len(args) <= 0 {
 		// FIXME: Use flag.Usage
 		fail(fmt.Sprintf("Give one of these commands: %v", ListCommands()))
+	}
+
+	if *logVerbose {
+		EnableVerboseLog()
 	}
 
 	commandName := args[0]

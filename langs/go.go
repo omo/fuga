@@ -39,8 +39,7 @@ func runProgram(prog string, args []string, wd string) error {
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 
-	// FIXME: Prinly only in verbose mode
-	fmt.Printf("Executing: %s %s\n", prog, strings.Join(args, " "))
+	base.VLog.Printf("Executing: %s %s\n", prog, strings.Join(args, " "))
 	if err := cmd.Start(); err != nil {
 		return err
 	}
